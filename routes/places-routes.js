@@ -38,8 +38,9 @@ router.get('/user/:uid', (req, res, next)=>{
     const place = DUMMY_PLACES.find(p=>{
         return p.creator === userId;
     });
-    
+
 //handling error
+
     if(!place){
         const error = new Error('could not find a place for user with provided id!');
         error.code = 404;
