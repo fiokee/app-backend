@@ -47,7 +47,7 @@ const getPlaceByUserId = (req, res, next)=>{
     res.json({place})
 };
 
-//creating  place route
+//creating  place route or post
 const createPlace = (req, res, next)=>{
 const {title, description, coordinates, address, creator} = req.body;
 //const title = req.body
@@ -59,12 +59,38 @@ const createdPlace = {
     address,
     creator
 };
+
 DUMMY_PLACES.push(createdPlace);
 
 res.status(201).json({place: createdPlace});
 // console.log(createdPlace);
 }
 
+
+//update a place by user id
+const updatePlace = ((req, res, next)=>{
+    const {title, description} = req.body
+    const placeId = req.params.pid;
+
+    const updatePlace = {... DUMMY_PLACES.find(p => p.id === placeId)};
+    const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
+    updatePlace.title = title;
+    updatePlace.description = description;
+
+    DUMMY_PLACES[placeIndex] = updatePlace;
+
+    res.status(200).json({place: updatePlace});
+})
+
+//deleting a place by user id
+
+const deletPlace = ((req, res, next)=>{
+    const placeId = req.params.pid;
+    const delelePlace = DUMMY_PLACES.find(p => p.id === placeId);
+})
+
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
-exports.createPlace = createPlace
+exports.createPlace = createPlace;
+exports.updatePlace = updatePlace;
+exports.deletPlace = deletPlace;
