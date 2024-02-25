@@ -15,7 +15,7 @@ app.use('/api/places', placesRoute);
 app.use((req, res, next)=>{
 const error = new HttpError('could not find the specific route', 404);
 throw error;
-})
+});
 
 //error handling
 app.use((error, req, res, next)=>{

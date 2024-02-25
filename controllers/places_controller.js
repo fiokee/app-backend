@@ -2,7 +2,7 @@ const {v4: uuidv4}= require('uuid');
 
 const HttpError = require('../models/http_error');
 
-const DUMMY_PLACES = [
+let DUMMY_PLACES = [
     {
         id: 'p1',
         title: 'Empire State Building',
@@ -33,18 +33,18 @@ const getPlaceById = (req, res, next)=>{
     res.json({place: place})
 };
 
-const getPlaceByUserId = (req, res, next)=>{
+const getPlacesByUserId = (req, res, next)=>{
     const userId = req.params.uid;
-    const place = DUMMY_PLACES.find(p=>{
+    const places = DUMMY_PLACES.filter(p=>{
         return p.creator === userId;
     });
 
 //handling error
 
-    if(!place){
+    if(!places || places.length === 0){
         return next( new HttpError('Could not find a place for the user with provided id!', 404));
     }
-    res.json({place})
+    res.json({places});
 };
 
 //creating  place route or post
@@ -84,13 +84,15 @@ const updatePlace = ((req, res, next)=>{
 
 //deleting a place by user id
 
-const deletPlace = ((req, res, next)=>{
+const deletePlace = ((req, res, next)=>{
     const placeId = req.params.pid;
-    const delelePlace = DUMMY_PLACES.find(p => p.id === placeId);
+    DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId);
+    
+    res.status(200).json({message: 'place deleted'});
 })
 
 exports.getPlaceById = getPlaceById;
-exports.getPlaceByUserId = getPlaceByUserId;
+exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;
 exports.updatePlace = updatePlace;
-exports.deletPlace = deletPlace;
+exports.deletePlace = deletePlace;
