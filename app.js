@@ -5,11 +5,15 @@ const HttpError = require('./models/http_error');
 
 const placesRoute = require('./routes/places-routes');
 
+const usersRoute = require('./routes/users-routes');
+
 const app = express();
 
 app.use(bodyParser.json());
 
 app.use('/api/places', placesRoute);
+
+app.use('/api/users', usersRoute);
 
 //error handling for unidentified route
 app.use((req, res, next)=>{
