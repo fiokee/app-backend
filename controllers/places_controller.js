@@ -51,7 +51,13 @@ const getPlacesByUserId = (req, res, next)=>{
 
 //creating  place route or post
 const createPlace = (req, res, next)=>{
- const error =  validationResult(req);
+ const errors =  validationResult(req);
+
+ //checking to validate if the input field is  empty
+ if(!errors.isEmpty()){
+
+    throw new HttpError('Invalid input passed, please check your data', 422);
+ }
 const {title, description, coordinates, address, creator} = req.body;
 //const title = req.body
 const createdPlace = {
@@ -72,6 +78,13 @@ res.status(201).json({place: createdPlace});
 
 //update a place by user id
 const updatePlace = ((req, res, next)=>{
+    const errors = validationResult(req);
+
+//checking to validate if the input field is empty
+    if(!errors.isEmpty()){
+        throw new HttpError('could not update input, invalid date, please check your data', 422);
+    }
+
     const {title, description} = req.body
     const placeId = req.params.pid;
 
