@@ -52,10 +52,8 @@ const getPlacesByUserId = (req, res, next)=>{
 //creating  place route or post
 const createPlace = (req, res, next)=>{
  const errors =  validationResult(req);
-
- //checking to validate if the input field is  empty
- if(!errors.isEmpty()){
-
+ 
+ if(!errors.isEmpty()){ //checking to validate if the input field is  empty
     throw new HttpError('Invalid input passed, please check your data', 422);
  }
 const {title, description, coordinates, address, creator} = req.body;
@@ -103,8 +101,11 @@ const updatePlace = ((req, res, next)=>{
 
 const deletePlace = ((req, res, next)=>{
     const placeId = req.params.pid;
+    //check to see if theere is a place to delete with such id
+    if(!DUMMY_PLACES.find(p => p.id === placeId)){ 
+        throw new HttpError('could not find a place to delete for the id', 404);
+    }
     DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId);
-    
     res.status(200).json({message: 'place deleted'});
 })
 
