@@ -2,6 +2,8 @@ const {v4: uuidv4}= require('uuid');
 
 const HttpError = require('../models/http_error');
 
+const {validationResult} = require('express-validator');
+
 let DUMMY_PLACES = [
     {
         id: 'p1',
@@ -49,6 +51,7 @@ const getPlacesByUserId = (req, res, next)=>{
 
 //creating  place route or post
 const createPlace = (req, res, next)=>{
+ const error =  validationResult(req);
 const {title, description, coordinates, address, creator} = req.body;
 //const title = req.body
 const createdPlace = {
@@ -81,6 +84,7 @@ const updatePlace = ((req, res, next)=>{
 
     res.status(200).json({place: updatePlace});
 })
+
 
 //deleting a place by user id
 
