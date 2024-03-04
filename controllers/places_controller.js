@@ -80,7 +80,7 @@ const updatePlace = ((req, res, next)=>{
 
 //checking to validate if the input field is empty
     if(!errors.isEmpty()){
-        throw new HttpError('could not update input, invalid date, please check your data', 422);
+        throw new HttpError('could not update input, invalid data, please check your data', 422);
     }
 
     const {title, description} = req.body
