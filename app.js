@@ -1,5 +1,7 @@
 const express = require('express');
 
+const mongoose = require('mongoose');
+
 const bodyParser = require('body-parser');
 const HttpError = require('./models/http_error');
 
@@ -30,5 +32,13 @@ app.use((error, req, res, next)=>{
     res.json({message: error.message || 'An unknown error occured!'});
 });
 
+mongoose
+.connect('mongodb+srv://fiokee_123:FNnSI7bjZLW9TGGX@cluster0.afn6l2s.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0')
+.then(()=>{
+    app.listen(5000);
+    console.log('database connected');
+})
+.catch((err)=>{
+    console.error('connection failed', err);
+});
 
-app.listen(5000);
