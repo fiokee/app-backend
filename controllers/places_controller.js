@@ -3,6 +3,7 @@ const {v4: uuidv4}= require('uuid');
 const HttpError = require('../models/http_error');
 
 const {validationResult} = require('express-validator');
+const Place = require('../models/place');
 
 let DUMMY_PLACES = [
     {
@@ -58,16 +59,16 @@ const createPlace = (req, res, next)=>{
  }
 const {title, description, coordinates, address, creator} = req.body;
 //const title = req.body
-const createdPlace = {
-    id: uuidv4(),
+const createdPlace = new Place({
     title,
     description,
     location: coordinates,
+    image: 'https://rb.gy/x23lxk',
     address,
     creator
-};
+});
 
-DUMMY_PLACES.push(createdPlace);
+createdPlace.save();
 
 res.status(201).json({place: createdPlace});
 // console.log(createdPlace);
@@ -101,7 +102,7 @@ const updatePlace = ((req, res, next)=>{
 
 const deletePlace = ((req, res, next)=>{
     const placeId = req.params.pid;
-    //check to see if theere is a place to delete with such id
+    //check to see if there is a place to delete with such id
     if(!DUMMY_PLACES.find(p => p.id === placeId)){ 
         throw new HttpError('could not find a place to delete for the id', 404);
     }
