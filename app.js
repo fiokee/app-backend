@@ -32,6 +32,7 @@ app.use((error, req, res, next)=>{
     res.json({message: error.message || 'An unknown error occured!'});
 });
 
+// connecting to database 
 mongoose
 .connect('mongodb+srv://fiokee_123:FNnSI7bjZLW9TGGX@cluster0.afn6l2s.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0')
 .then(()=>{
