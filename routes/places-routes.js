@@ -31,8 +31,10 @@ router.post('/',
 router.patch('/:pid',
 [
 check('title')
-.not().isEmpty(),
-check('description').not().isLength({min: 5}),
+.trim()
+.not().isEmpty()
+.withMessage('must not be empty'),
+check('description').trim().isLength({min: 10}).withMessage('not be empty'),
 ], placesControllers.updatePlace);
 
 router.delete('/:pid', placesControllers.deletePlace);

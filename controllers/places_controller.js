@@ -23,6 +23,7 @@ let DUMMY_PLACES = [
 const getPlaceById = async (req, res, next)=>{
 
     const placeId = req.params.pid;
+    
     let place;
 
     try{
@@ -37,22 +38,27 @@ const getPlaceById = async (req, res, next)=>{
     if(!place){
        return next( new HttpError ('Could not find a place for the provided id!', 404));
     }
-
-    res.json({place: place.toObject( {getters: true}) })
+    res.json({place: place.toObject( {getters: true}) });
 };
-
-const getPlacesByUserId = (req, res, next)=>{
+// getting places by the user Id
+    const getPlacesByUserId = async (req, res, next)=>{
     const userId = req.params.uid;
-    const places = DUMMY_PLACES.filter(p=>{
-        return p.creator === userId;
-    });
+
+    let places;
+
+    try{
+         places = await Place.find({creator:userId });
+    }catch(err){
+    const error = new HttpError('fetching places failed, try again later', 500);
+    return next(error);
+    }
 
 //handling error
 
     if(!places || places.length === 0){
         return next( new HttpError('Could not find a place for the user with provided id!', 404));
     }
-    res.json({places});
+    res.json({places : places.map(place => place.toObject( {getters: true}))});
 };
 
 //creating  place route or post
@@ -80,32 +86,42 @@ try{
     const error = new HttpError('creating place failed try again', 500);
     return next(error);
 }
-
 res.status(201).json({place: createdPlace});
 // console.log(createdPlace);
 }
 
 //update a place by user id
-const updatePlace = ((req, res, next)=>{
+const updatePlace = async (req, res, next)=>{
     const errors = validationResult(req);
 
 //checking to validate if the input field is empty
     if(!errors.isEmpty()){
         throw new HttpError('could not update input, invalid data, please check your data', 422);
     }
-
+    
     const {title, description} = req.body
     const placeId = req.params.pid;
 
-    const updatePlace = {... DUMMY_PLACES.find(p => p.id === placeId)};
-    const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
-    updatePlace.title = title;
-    updatePlace.description = description;
+    let place;
+    try{
+        place = await Place.findById(placeId)
+    }catch(err){
+        const error = new HttpError('something went wrong could not update', 500);
+        return next(error);
+    }
+    
+    place.title = title;
+    place.description = description;
 
-    DUMMY_PLACES[placeIndex] = updatePlace;
+    try {
+       await place.save(); // saving the updated place object
+    }catch(err){
+        const error = new HttpError('something went wrong could not update place', 500)
+        return next(error);
+    }
 
-    res.status(200).json({place: updatePlace});
-})
+    res.status(200).json({place: place.toObject({getters: true}) });
+}
 
 
 //deleting a place by user id
