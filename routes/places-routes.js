@@ -11,22 +11,30 @@ router.get('/:pid', placesControllers.getPlaceById );
 
 router.get('/user/:uid', placesControllers.getPlacesByUserId);
 
+// validating and emtyp input field
 router.post('/',
 [ 
     check('title')
+    .trim()
     .not()
-    .isEmpty(),
-    check('description').not().isLength({min: 5}),
-    check('address').not().isEmpty()
+    .isEmpty()
+    .withMessage('must not be empty'),
+    check('description')
+    .trim()
+    .isLength({min: 10})
+    .withMessage('Description must be at least 10 characters long'),
+    check('address').trim().not().isEmpty()
 
 ], placesControllers.createPlace);
 
-
+// validating and emtyp input field
 router.patch('/:pid',
 [
 check('title')
-.not().isEmpty(),
-check('description').not().isLength({min: 5}),
+.trim()
+.not().isEmpty()
+.withMessage('must not be empty'),
+check('description').trim().isLength({min: 10}).withMessage('not be empty'),
 ], placesControllers.updatePlace);
 
 router.delete('/:pid', placesControllers.deletePlace);
