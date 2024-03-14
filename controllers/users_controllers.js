@@ -14,9 +14,17 @@
         }
     ];
 
-    const getUsers = ((req, res, next)=>{
-        res.json({users: DUMMY_USERS});
-    });
+    const getUsers = async(req, res, next)=>{
+        let users;
+        try{
+
+            users = await User.find({}, '-password'); //exempting the password
+        }catch(err){
+            const error = new HttpError('failed getting users, please try again', 500);
+            return next(error);
+        }
+        res.json({users: users.map(user => user.toObject({getters : true}))});
+    };
 
     //creating a new user
     const signup = async(req, res, next)=>{
@@ -25,7 +33,7 @@
     if(!errors.isEmpty()){
        return next(new HttpError('invalid user input, please check your input data', 422));
     }
-    const {name, email, password, places} = req.body;
+    const {name, email, password} = req.body;
 
     //verified if user already exist 
     let existingUser;
@@ -46,7 +54,7 @@
         email,
         image: 'https://rb.gy/x23lxk',
         password,
-        places
+        places: []
     });
     try{
         await createdUser.save();
