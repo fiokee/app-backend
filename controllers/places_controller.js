@@ -4,6 +4,7 @@ const HttpError = require('../models/http_error');
 
 const {validationResult} = require('express-validator');
 const Place = require('../models/place');
+const User = require('../models/user'); 
 
 let DUMMY_PLACES = [
     {
@@ -79,6 +80,22 @@ const createdPlace = new Place({
     address,
     creator
 });
+
+//check to see if the user Id exist in other to create a place
+let user;
+try{
+    user = await User.findById(creator);
+}catch(err){
+    const error = new HttpError('Creating place failed, please try again', 500);
+    return next(error);
+};
+
+// check to see if user not exist in db
+if(!user){
+    const error = new HttpError('could not find user for provided id', 404);
+    return next(error);
+}
+
 try{
 
     await createdPlace.save();
@@ -96,7 +113,7 @@ const updatePlace = async (req, res, next)=>{
 
 //checking to validate if the input field is empty
     if(!errors.isEmpty()){
-        throw new HttpError('could not update input, invalid data, please check your data', 422);
+        return next(new HttpError('could not update input, invalid data, please check your data', 422));
     }
     
     const {title, description} = req.body
