@@ -7,19 +7,6 @@ const  mongoose  = require('mongoose');
 const Place = require('../models/place');
 const User = require('../models/user'); 
 
-let DUMMY_PLACES = [
-    {
-        id: 'p1',
-        title: 'Empire State Building',
-        description: 'One of the most famous sky scrappers in the world!',
-        location:{
-            lat: '40.748817',
-            lng: '-73.985428'
-        },
-        address: '20 W 34th St., New York, NY 10001, United States',
-        creator: 'u1'
-    }
-];
 
 
 const getPlaceById = async (req, res, next)=>{
@@ -110,7 +97,6 @@ try{
     return next(error);
 }
 res.status(201).json({place: createdPlace});
-// console.log(createdPlace);
 }
 
 //update a place by user id
@@ -153,15 +139,25 @@ const deletePlace = async (req, res, next)=>{
     //check to see if there is a place to delete with such id
     let place;
     try{
-        place = await Place.findById(placeId);
+        place = await Place.findById(placeId).populate('creator')//populate allows to refer to data stored in anothher collection;
     }catch(err){
         const error = new HttpError('could not delete a place something went wrong', 500);
         return next(error);
     }
 
+    //check to see if a place id exist
+    if(!place){
+        return next(new HttpError('could not find a place with such id', 404)); 
+    }
+
     //deleting from database
     try{
-        await place.deleteOne();
+        const sess = await mongoose.startSession(); //we are checking create automatic uid
+        sess.startTransaction();
+        await place.deleteOne({session: sess});// removing a place from the place collection
+        place.creator.places.pull(place);//this removes the id
+        await place.creator.save({session: sess});//saving our newly created user
+        await sess.commitTransaction();
     }catch(err){
         
         const error = new HttpError('could not delete a place something went wrong', 500);
