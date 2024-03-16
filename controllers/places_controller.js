@@ -3,6 +3,7 @@ const {v4: uuidv4}= require('uuid');
 const HttpError = require('../models/http_error');
 
 const {validationResult} = require('express-validator');
+const  mongoose  = require('mongoose');
 const Place = require('../models/place');
 const User = require('../models/user'); 
 
@@ -94,12 +95,17 @@ try{
 if(!user){
     const error = new HttpError('could not find user for provided id', 404);
     return next(error);
-}
+};
 
 try{
-
-    await createdPlace.save();
+    const sess = await mongoose.startSession(); //we are checking create automatic uid
+    sess.startTransaction();
+    await createdPlace.save({session: sess});
+    user.places.push(createdPlace); //making sure the place id is added to user
+    await user.save({session: sess}) //updating the user
+    await sess.commitTransaction() //making it save in the db
 }catch(err){
+    console.log(err)
     const error = new HttpError('creating place failed try again', 500);
     return next(error);
 }
