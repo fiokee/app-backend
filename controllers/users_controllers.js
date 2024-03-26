@@ -45,7 +45,7 @@
     const createdUser = new User({
         name,
         email,
-        image: 'https://rb.gy/x23lxk',
+        image: 'https://rb.gy/83k3w',
         password,
         places: []
     });
