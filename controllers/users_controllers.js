@@ -75,7 +75,7 @@
     const error = new HttpError('invalid credentials, could not login user', 401);
     return next(error);
     }
-        res.json({message: 'Login successful'});
+        res.json({message: 'Login successful', user: existingUser.toObject({getters: true})});
     };
 
     exports.getUsers = getUsers;
