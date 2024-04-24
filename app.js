@@ -1,6 +1,7 @@
 const express = require('express');
 
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const bodyParser = require('body-parser');
 const HttpError = require('./models/http_error');
@@ -34,6 +35,11 @@ throw error;
 
 //error handling
 app.use((error, req, res, next)=>{
+    if(req.file){
+        fs.unlink(req.file.path, err=>{
+            console.log(err)
+        });//errors for file
+    }
     if(res.headerSent){
        next(error);
     }
