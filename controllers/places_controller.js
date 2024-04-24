@@ -149,7 +149,6 @@ const deletePlace = async (req, res, next)=>{
     if(!place){
         return next(new HttpError('could not find a place with such id', 404)); 
     }
-
     //deleting from database
     try{
         const sess = await mongoose.startSession(); //we are checking create automatic uid
