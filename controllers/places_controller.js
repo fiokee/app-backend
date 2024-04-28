@@ -63,9 +63,9 @@ const {title, description, coordinates, address, creator} = req.body;
 const createdPlace = new Place({
     title,
     description,
-    location: coordinates,
-    image: 'https://rb.gy/x23lxk',
     address,
+    location: coordinates,
+    image: req.file.path,
     creator
 });
 
