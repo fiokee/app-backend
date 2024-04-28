@@ -2,6 +2,7 @@ const express = require('express');
 
 const mongoose = require('mongoose');
 const fs = require('fs');
+const path = require('path');
 
 const bodyParser = require('body-parser');
 const HttpError = require('./models/http_error');
@@ -13,6 +14,8 @@ const usersRoute = require('./routes/users-routes');
 const app = express();
 
 app.use(bodyParser.json());
+
+app.use('/uploads/images', express.static(path.join('uploads', 'images'))); //uploading image statically
 
 //handling cors error
 app.use((req, res, next)=>{
@@ -38,7 +41,7 @@ app.use((error, req, res, next)=>{
     if(req.file){
         fs.unlink(req.file.path, err=>{
             console.log(err)
-        });//errors for file
+        });//errors for file meaning if something goes wrong 
     }
     if(res.headerSent){
        next(error);

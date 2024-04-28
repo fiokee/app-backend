@@ -1,5 +1,7 @@
 const express = require('express');
 
+const fileUpload = require('../middlewares/file-Upload');
+
 const {check} = require('express-validator'); //this for validating input data 
 
 const placesControllers = require('../controllers/places_controller');
@@ -13,6 +15,7 @@ router.get('/user/:uid', placesControllers.getPlacesByUserId);
 
 // validating and emtyp input field
 router.post('/',
+fileUpload.single('image'), //for file uploads 
 [ 
     check('title')
     .trim()
