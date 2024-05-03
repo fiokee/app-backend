@@ -5,6 +5,7 @@ const fileUpload = require('../middlewares/file-Upload');
 const {check} = require('express-validator'); //this for validating input data 
 
 const placesControllers = require('../controllers/places_controller');
+const checkAuth = require('../middlewares/check_auth');
 
 const router = express.Router();
 
@@ -12,6 +13,8 @@ const router = express.Router();
 router.get('/:pid', placesControllers.getPlaceById );
 
 router.get('/user/:uid', placesControllers.getPlacesByUserId);
+
+router.use(checkAuth)//this send a request to invalid token
 
 // validating and emtyp input field
 router.post('/',
