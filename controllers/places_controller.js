@@ -8,6 +8,17 @@ const Place = require('../models/place');
 const User = require('../models/user'); 
 
 
+const getAllPlaces = async(req, res, next)=>{
+    let places;
+    try {
+        places = await Place.find({});
+    } catch (err) {
+        const error = new HttpError('Something went wrong,could not find a places', 500);
+        return next(error);
+    }
+
+    res.json({places : places.map(place => place.toObject( {getters: true}))});
+};
 
 const getPlaceById = async (req, res, next)=>{
 
@@ -66,7 +77,7 @@ const createdPlace = new Place({
     address,
     location: coordinates,
     image: req.file.path,
-    creator
+    creator: req.userData.userId
 });
 
 //check to see if the user Id exist in other to create a place
@@ -117,7 +128,12 @@ const updatePlace = async (req, res, next)=>{
     }catch(err){
         const error = new HttpError('something went wrong could not update', 500);
         return next(error);
-    }
+    };
+
+    if(place.creator.toString() !== req.userData.userId){ // authorization for a place to be editted by a user who created it
+        const error = new HttpError('you are not allowed to edit this place', 401);
+        return next(error);
+    };
     
     place.title = title;
     place.description = description;
@@ -148,6 +164,12 @@ const deletePlace = async (req, res, next)=>{
     //check to see if a place id exist
     if(!place){
         return next(new HttpError('could not find a place with such id', 404)); 
+    };
+
+    // checking to see if the place was created by the user who sent the request
+    if(place.creator.id !== req.userData.userId){
+        const error = new HttpError('you are not allowed to edit this place', 401);
+        return next(error);
     }
     //deleting from database
     try{
@@ -165,6 +187,7 @@ const deletePlace = async (req, res, next)=>{
     res.status(200).json({message: 'place deleted'});
 }
 
+exports.getAllPlaces = getAllPlaces;
 exports.getPlaceById = getPlaceById;
 exports.getPlacesByUserId = getPlacesByUserId;
 exports.createPlace = createPlace;

@@ -2,6 +2,10 @@ const HttpError = require('../models/http_error');
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
+
+    if(req.method === 'OPTIONS'){
+        return next();
+    }
     try {
         // Check if Authorization header exists
         if (!req.headers.authorization) {
@@ -27,7 +31,7 @@ module.exports = (req, res, next) => {
         next();
     } catch (err) {
         // Handle authentication errors
-        const error = new HttpError('Authentication failed: Invalid token', 401);
+        const error = new HttpError('Authentication failed: Invalid token', 403);
         return next(error);
     }
 };
