@@ -15,7 +15,11 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use('/uploads/images', express.static(path.join('uploads', 'images'))); //uploading image statically
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'images');
+console.log(`Serving static files from ${uploadsDir}`);
+
+app.use('/uploads/images', express.static(uploadsDir));
+ //uploading image statically
 
 //handling cors error
 app.use((req, res, next)=>{
@@ -32,19 +36,13 @@ app.use((req, res, next)=>{
 });
 
 
-// Use cors middleware
-// app.use(cors({
-//     origin: '*', // Allow all origins. You can also specify specific origins here
-//     methods: 'GET, POST, PATCH, DELETE, OPTIONS',
-//     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-// }));
-
 app.use('/api/places', placesRoute);
 
 app.use('/api/users', usersRoute);
 
-//error handling for unidentified route
+//error handling for unidentif route
 app.use((req, res, next)=>{
+    console.log(`Unhandled route: ${req.originalUrl}`);
 const error = new HttpError('could not find the specific route', 404);
 throw error;
 });
