@@ -7,7 +7,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const HttpError = require('./models/http_error');
 
-const cors = require('cors');
 const placesRoute = require('./routes/places-routes');
 
 const usersRoute = require('./routes/users-routes');
@@ -18,12 +17,27 @@ app.use(bodyParser.json());
 
 app.use('/uploads/images', express.static(path.join('uploads', 'images'))); //uploading image statically
 
+//handling cors error
+app.use((req, res, next)=>{
+    res.setHeader('Access-Control-Allow-Origin', '*'); //handling CORS Error
+    res.setHeader('Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'); //controls all incoming reqest by header
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
+
 // Use cors middleware
-app.use(cors({
-    origin: '*', // Allow all origins. You can also specify specific origins here
-    methods: 'GET, POST, PATCH, DELETE, OPTIONS',
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-}));
+// app.use(cors({
+//     origin: '*', // Allow all origins. You can also specify specific origins here
+//     methods: 'GET, POST, PATCH, DELETE, OPTIONS',
+//     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+// }));
 
 app.use('/api/places', placesRoute);
 
