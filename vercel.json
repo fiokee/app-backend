@@ -15,5 +15,10 @@
         "src": "/uploads/(.*)",
         "dest": "/uploads/$1"
       }
-    ]
+    ],
+    "functions": {
+      "app.js": {
+        "includeFiles": "uploads/images/**"
+      }
+    }
   }
