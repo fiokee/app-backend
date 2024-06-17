@@ -15,12 +15,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-const uploadsDir = path.join(__dirname, '..', 'uploads', 'images');
-console.log(`Serving static files from ${uploadsDir}`);
-
-app.use('/uploads/images', express.static(uploadsDir));
-
-// app.use('/uploads/images', express.static(path.join(__dirname, 'uploads', 'images'))); //uploading image statically
+app.use('/uploads/images', express.static(path.join(__dirname, 'uploads', 'images'))); //uploading image statically
 
 //handling cors error
 app.use((req, res, next)=>{
@@ -50,7 +45,6 @@ app.use('/api/users', usersRoute);
 
 //error handling for unidentified route
 app.use((req, res, next)=>{
-console.log(`Unhandled route: ${req.originalUrl}`);
 const error = new HttpError('could not find the specific route', 404);
 throw error;
 });

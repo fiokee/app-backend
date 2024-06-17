@@ -1,29 +1,19 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "app.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/app.js"
-    },
-    {
-      "src": "/uploads/images/(.*)",
-      "dest": "/uploads/images/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app.js"
-    }
-  ],
-  "functions": {
-    "app.js": {
-      "includeFiles": "uploads/images/**",
-      "maxDuration": 30
-    }
+    "version": 2,
+    "builds": [
+      {
+        "src": "app.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "app.js"
+      },
+      {
+        "src": "/uploads/(.*)",
+        "dest": "/uploads/$1"
+      }
+    ]
   }
-}
