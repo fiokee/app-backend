@@ -17,7 +17,7 @@
       }
     ],
     "functions": {
-      "api/index.js": {
+      "app.js": {
         "includeFiles": "uploads/images/**"
       }
     }
