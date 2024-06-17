@@ -12,8 +12,8 @@
       "dest": "/app.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "/uploads/$1"
+      "src": "/uploads/images/(.*)",
+      "dest": "/uploads/images/$1"
     },
     {
       "src": "/(.*)",
@@ -22,7 +22,8 @@
   ],
   "functions": {
     "app.js": {
-      "includeFiles": "uploads/images/**"
+      "includeFiles": "uploads/images/**",
+      "maxDuration": 30
     }
   }
 }
