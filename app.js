@@ -19,7 +19,7 @@ app.use('/uploads/images', express.static(path.join(__dirname, 'uploads', 'image
 
 //handling cors error
 app.use((req, res, next)=>{
-    res.setHeader('Access-Control-Allow-Origin', '*'); //handling CORS Error
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); //handling CORS Error
     res.setHeader('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'); //controls all incoming reqest by header
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
