@@ -18,12 +18,16 @@ app.use(bodyParser.json());
 app.use('/uploads/images', express.static(path.join(__dirname, 'uploads', 'images'))); //uploading image statically
 
 //handling cors error
-app.use((req, res, next)=>{
-    res.setHeader('Access-Control-Allow-Origin', 'https://photo-app-six-kappa.vercel.app'); //handling CORS Error
-    res.setHeader('Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'); //controls all incoming reqest by header
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+const allowedOrigins = ['https://photo-app-six-kappa.vercel.app', 'http://localhost:3000'];
 
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+    
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
         return res.sendStatus(200);
